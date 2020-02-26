@@ -1,0 +1,1 @@
+pixijs => application => renderer => stage => loader => sprite => texture

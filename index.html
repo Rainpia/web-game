@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Space Gladiators</title>
+  <script src="keyboard.js"></script>
+  <script src="game.js"></script>
+  <script src="pixi.dev.js"></script>
+  <script src="index.js"></script>
+  
+  <style>
+    *{
+      padding: 0;margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <script type="text/javascript">
+    // start hello world
+    let type = "WebGL"
+    if(!PIXI.utils.isWebGLSupported()){
+      type = "canvas"
+    }
+
+    PIXI.utils.sayHello(type);
+    // end hello world
+
+
+    // define aliases
+    const Application = PIXI.Application;
+    const loader = PIXI.loader;
+    const resources = PIXI.loader.resources;
+    const Sprite = PIXI.Sprite;
+    const TextureCache = PIXI.utils.TextureCache;
+    const Rectangle = PIXI.Rectangle;
+
+    
+    //Create a Pixi Application
+    let app = new Application();
+    //Add the canvas that Pixi automatically created for you to the HTML document
+    window.document.body.appendChild(app.view);
+
+    // set view size, bg_color
+    app.renderer.backgroundColor = 0x061639;
+    app.renderer.view.style.position = "absolute";
+    app.renderer.view.style.display = "block";
+    app.renderer.autoResize = true;
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+
+
+
+    //load an image and run the `setup` function when it's done
+    loader
+      .add("images/tileset.json")
+      .on("progress", loadProgressHandler)
+      .load(setup);
+
+    function loadProgressHandler(loader, resource) {
+      console.log("loading: " + resource.url); 
+      console.log("progress: " + loader.progress + "%"); 
+    }
+
+    let logo, runrun, xiaofeng, liyang, wuqi, state;
+
+    //This `setup` function will run when the image has loaded
+    function setup() {
+
+      //Create the cat sprite 1500x800
+      let bg = new Sprite(TextureCache['bg.jpg']);
+      bg.width = window.innerWidth;
+      bg.height = window.innerHeight;
+      app.stage.addChild(bg);
+
+      //Create the cat sprite 1500x800
+      logo = new Sprite(TextureCache['group.png']);
+      logo.scale.set(0.2,0.2);
+      logo.x = app.stage.width / 2 - 150;
+      logo.y = app.stage.height / 2 - 100;
+      app.stage.addChild(logo);
+
+      runrun = new Sprite(TextureCache["runrun.png"]);
+      runrun.width = 100;
+      runrun.height = 100;
+      runrun.x = 0;
+      runrun.y = app.stage.height - 100;
+      runrun.vx = 0;
+      runrun.vy = 0;
+      app.stage.addChild(runrun);
+
+      xiaofeng = new Sprite(TextureCache["xiaofeng.png"]);
+      xiaofeng.width = 100;
+      xiaofeng.height = 100;
+      xiaofeng.x = app.stage.width - 100;
+      xiaofeng.y = 0;
+      app.stage.addChild(xiaofeng);
+
+      liyang = new Sprite(TextureCache["liyang.png"]);
+      liyang.width = 100;
+      liyang.height = 100;
+      liyang.x = app.stage.width - 100;
+      liyang.y = app.stage.height - 100;
+      app.stage.addChild(liyang);
+
+      wuqi = new Sprite(TextureCache["wuqi.png"]);
+      wuqi.width = 100;
+      wuqi.height = 100;
+      wuqi.x = 0;
+      wuqi.y = 0;
+      app.stage.addChild(wuqi);
+
+
+      //Capture the keyboard arrow keys
+      let left = keyboard("ArrowLeft"),
+          up = keyboard("ArrowUp"),
+          right = keyboard("ArrowRight"),
+          down = keyboard("ArrowDown");
+
+      //Left arrow key `press` method
+      left.press = () => {
+        //Change the cat's velocity when the key is pressed
+        runrun.vx = -5;
+        runrun.vy = 0;
+      };
+      
+      //Left arrow key `release` method
+      left.release = () => {
+        //If the left arrow has been released, and the right arrow isn't down,
+        //and the runrun isn't moving vertically:
+        //Stop the runrun
+        if (!right.isDown && runrun.vy === 0) {
+          runrun.vx = 0;
+        }
+      };
+
+      //Up
+      up.press = () => {
+        runrun.vy = -5;
+        runrun.vx = 0;
+      };
+      up.release = () => {
+        if (!down.isDown && runrun.vx === 0) {
+          runrun.vy = 0;
+        }
+      };
+
+      //Right
+      right.press = () => {
+        runrun.vx = 5;
+        runrun.vy = 0;
+      };
+      right.release = () => {
+        if (!left.isDown && runrun.vy === 0) {
+          runrun.vx = 0;
+        }
+      };
+
+      //Down
+      down.press = () => {
+        runrun.vy = 5;
+        runrun.vx = 0;
+      };
+      down.release = () => {
+        if (!up.isDown && runrun.vx === 0) {
+          runrun.vy = 0;
+        }
+      };
+
+      state = around;
+
+      app.ticker.add(delta => gameLoop(delta ));
+    }
+
+    const gameLoop = (delta)  =>{
+      state(delta, runrun);
+      // state(delta, xiaofeng);
+      // state(delta, liyang);
+      // state(delta, wuqi);
+    }
+    function around(delta, who){
+
+      who.x += who.vx;
+      who.y += who.vy
+
+      // who.vx = 5;
+      // who.vy = 10;
+      
+      // if(who.y >= (app.stage.height - 100) && who.x < (app.stage.width - 100) ){
+      //   who.x += who.vx;
+      // }
+
+      // if(who.x >= (app.stage.width - 100) && who.y > 0){
+      //   who.y -= who.vy;
+      // }
+
+      // if(who.y <= 0 && who.x > 0){
+      //   who.x -= who.vx;
+      // }
+
+      // if(who.x <= 0 && who.y < (app.stage.height - 100)){
+      //   who.y += who.vy;
+      // }
+    }
+
+  </script>
+</body>
+</html>
