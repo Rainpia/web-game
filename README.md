@@ -1,5 +1,5 @@
-pixijs => application => renderer => stage => loader => sprite => texture
-
+### Study Resource[https://github.com/kittykatattack/learningPixi]
+### LOG
 #### Day 2020.2.26
  - install TexturePacker
  - create tileset.json and tileset.png from TexturePacker
