@@ -1,5 +1,7 @@
-### Study Resource[https://github.com/kittykatattack/learningPixi]
-### LOG
+### [Study Resource](https://github.com/kittykatattack/learningPixi)
+
+### Study Log
+
 #### Day 2020.2.26
  - install TexturePacker
  - create tileset.json and tileset.png from TexturePacker
