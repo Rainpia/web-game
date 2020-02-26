@@ -8,7 +8,7 @@
  - auto move sprite
  - control keyboard move sprite
 
- ![Today Achievement](/readme-images/2020.2.26.png)
+ ![2020.2.26 Achievement](/readme-images/2020.2.26.png)
 
 #### Day 2020.2.25
  - create tileset.png from PS tool
