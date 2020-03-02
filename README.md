@@ -25,4 +25,6 @@
 
 #### Day 2020.3.2
  - create rectangle, line, ellipes, circle, roundBox
- 
+
+ ![2020.2.26 Achievement](/readme-images/2020.3.2.png)
+
