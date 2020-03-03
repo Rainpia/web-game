@@ -2,10 +2,15 @@
 
 ### Study Log
 
+#### Day 2020.3.3
+ - make game work
+
+ ![2020.3.3 Achievement](/readme-images/2020.3.3.png)
+
 #### Day 2020.3.2
  - create rectangle, line, ellipes, circle, roundBox
 
- ![2020.2.26 Achievement](/readme-images/2020.3.2.png)
+ ![2020.3.2 Achievement](/readme-images/2020.3.2.png)
 
 #### Day 2020.2.26
  - install TexturePacker

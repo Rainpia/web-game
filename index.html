@@ -4,6 +4,7 @@
   <title>Space Gladiators</title>
   <script src="keyboard.js"></script>
   <script src="hitRectangle.js"></script>
+  <script src="contain.js"></script>
   <script src="game.js"></script>
   <script src="pixi.dev.js"></script>
   <script src="index.js"></script>
@@ -66,6 +67,7 @@
     let state;
     let bgCover;
     let chessboard;
+    let door;
     let gameLogo;
     let runrun, xiaofeng, liyang, wuqi;
     let message;
@@ -84,30 +86,52 @@
 
     const createChessboard = () => {
       chessboard = new Container();   
-      for(let i = 1; i< 9;i ++){
+      for(let i = 0; i< 8;i ++){
         let row = new Graphics();
         row.lineStyle(4, 0xFFFFFF, 1);
-        row.moveTo(100, i * 100);
-        row.lineTo(100 * 11, i * 100);
+        row.moveTo(0, i * 100);
+        row.lineTo(100 * 10, i * 100);
         row.x = 0;
         row.y = 0;
         chessboard.addChild(row);
 
       }
 
-      for(let i = 1; i < 12;i ++){
+      for(let i = 0; i < 11;i ++){
         let column = new Graphics();
         column.lineStyle(4, 0xFFFFFF, 1);
-        column.moveTo(i * 100, 100);
-        column.lineTo(i * 100, 100 * 8);
+        column.moveTo(i * 100, 0);
+        column.lineTo(i * 100, 100 * 7);
         column.x = 0;
         column.y = 0;
         chessboard.addChild(column);
       }
 
+      chessboard.x = 100;
+      chessboard.y = 100;
       app.stage.addChild(chessboard);
     }
 
+    const createDoor = () => {
+      door = new Container();
+      let doorGrahpics = new Graphics();
+      doorGrahpics.beginFill(0x66FF33);
+      doorGrahpics.drawPolygon([
+        0,-32,
+         -32,32,
+         32, 32
+      ]);
+      doorGrahpics.endFill();
+      let doorMsg = new Text('DOOR');
+      doorMsg.style = {fill: "red", font: "15px PetMe64"};
+      doorMsg.x = -20;
+      doorMsg.y = 8;
+      door.addChild(doorGrahpics);
+      door.addChild(doorMsg);
+      door.x = 1050;
+      door.y = 100;
+      app.stage.addChild(door);
+    }
     const putLogo = () => {
       gameLogo = new Sprite(TextureCache['group.png']);
       gameLogo.scale.set(0.15,0.15);
@@ -129,8 +153,8 @@
       xiaofeng = new Sprite(TextureCache["xiaofeng.png"]);
       xiaofeng.width = 100;
       xiaofeng.height = 100;
-      xiaofeng.x = app.stage.width - 200;
-      xiaofeng.y = app.stage.height - 150;
+      xiaofeng.x = 100;
+      xiaofeng.y = app.stage.height - 280;
       xiaofeng.vx = 0;
       xiaofeng.vy = 0;
       app.stage.addChild(xiaofeng);
@@ -138,8 +162,8 @@
       liyang = new Sprite(TextureCache["liyang.png"]);
       liyang.width = 100;
       liyang.height = 100;
-      liyang.x = app.stage.width - 300;
-      liyang.y = app.stage.height - 150;
+      liyang.x = 200;
+      liyang.y = app.stage.height - 280;
       liyang.vx = 0;
       liyang.vy = 0;
       app.stage.addChild(liyang);
@@ -147,19 +171,25 @@
       wuqi = new Sprite(TextureCache["wuqi.png"]);
       wuqi.width = 100;
       wuqi.height = 100;
-      wuqi.x = app.stage.width - 400;
-      wuqi.y = app.stage.height - 150;
+      wuqi.x = 300;
+      wuqi.y = app.stage.height - 280;
       liyang.vx = 0;
       liyang.vy = 0;
       app.stage.addChild(wuqi);
     }
 
     const createMessage = () => {
-      message = new Text("Hello Pixi!");
+      message = new Text("Ready!!!!!");
       message.style = {fill: "white", font: "16px PetMe64"};
       message.x = 100 * 3;
       message.y = 50;
       app.stage.addChild(message);
+
+      let notification = new Text("Rules: Runrun take her partner out of chessboard!!!!!");
+      notification.style = {fill: "black", font: "16px PetMe64"};
+      notification.x = 100 * 3;
+      notification.y = 25;
+      app.stage.addChild(notification);
     }
 
     const activeKeyBoard = (who) => {
@@ -226,6 +256,8 @@
 
       createChessboard();
 
+      createDoor();
+
       putLogo();
 
       putPlayer();
@@ -250,17 +282,42 @@
       //check for a collision between the pl and the box
       if (hitRectangle(who, chessboard)) {
 
-        //if there's a collision, change the message text
-        //and tint the box red
-        message.text = "hit!";
+        message.text = 'Running!!!!!';
 
-      } else {
+        let whoHitChessBoard = contain(who, {x: 100, y: 100, width: 1100, height: 800});
 
-        //if there's no collision, reset the message
-        //text and the box's color
-        message.text = "No collision...";
+        if (whoHitChessBoard === "top" || whoHitChessBoard === "bottom") {
+          who.vy *= -1;
+        }
+        if (whoHitChessBoard === "left" || whoHitChessBoard === "right") {
+          who.vx *= -1;
+        }
       }
 
+      if(hitRectangle(who, xiaofeng)){
+        xiaofeng.x = who.x + 50;
+        xiaofeng.y = who.y + 50;
+      }
+      if(hitRectangle(who, liyang)){
+        liyang.x = who.x - 50;
+        liyang.y = who.y + 50;
+      }
+      if(hitRectangle(who, wuqi)){
+        wuqi.x = who.x - 50;
+        wuqi.y = who.y - 50;
+      }
+
+      if(hitRectangle(who, door)){
+        who.x = app.stage.width - 100;
+        who.y = app.stage.height - 150;
+        xiaofeng.x = app.stage.width - 200;
+        xiaofeng.y = app.stage.height - 150;
+        liyang.x = app.stage.width - 300;
+        liyang.y = app.stage.height - 150;
+        wuqi.x = app.stage.width - 400;
+        wuqi.y = app.stage.height - 150;
+        message.text = "WIN!";
+      }
     }
 
   </script>
